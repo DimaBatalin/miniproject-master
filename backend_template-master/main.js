@@ -49,18 +49,77 @@ fastify.register(require('@fastify/cors'), (instance) => {
 })
 
 // Создание маршрута для get запроса
-fastify.get('/', async function (request, reply) {
+fastify.post('/select', async function (request, reply) {
     const client = await pool.connect()
+    let data = null
+
     try {
         const users = await client.query(`select * from users`)
+        // const users = await client.query(`delete * from users returing id`) //
+        data = users.rows
+
+        console.log(users.rows);
     } 
     catch (error) {
         console.log(error);
     }
     finally {
         client.release()
-        reply.send({ hello: 'world' })
+        reply.send({ data })
     }
+})
+
+
+// создание маршрутов для пост запросов 
+fastify.post('/insert', async function (request, reply) {
+    const client = await pool.connect()
+    let data = null
+    try {
+        const users = await client.query(`insert into users ("name") values ($1)`, [ request.body.name ])
+        console.log(users.rows);
+        data = users
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" }, [ request.body.name, request.body.id ])
+})
+
+
+fastify.post('/update', async function (request, reply) {
+    const client = await pool.connect()
+    let data = null
+    try {
+        const users = await client.query(`update users set "name" = $1 where "id" = $2`, [ request.body.newName, request.body.id ])
+        console.log(users.rows);
+        data = users
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" }, [ request.body.name, request.body.id ])
+})
+
+fastify.post('/delete', async function (request, reply) {
+    const client = await pool.connect()
+    
+    try {
+        const users = await client.query(`delete from users where id = $1`, [ request.body.id ])
+        console.log(users.rows);
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" })
 })
 
 // Создание маршрута для post запроса
