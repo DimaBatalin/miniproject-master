@@ -17,16 +17,23 @@
         v-for="(color, index) in this.ArrayColor"
         :key="index"
       >
-        <div class="color" :style="{backgroundColor: color}"></div>
+
+        <div 
+          @click="choosingColorFolder(index)"
+          class="color" 
+          :style="{backgroundColor: color}"
+        ></div>
+
       </div>
     </div>
 
 
-    <button class="AddFolderTasks">
+    <button 
+      class="AddFolderTasks"
+      @click="AddFolderTasks"
+    >
       Добавить
     </button>
-
-
   </div>
 </template>
 
@@ -37,24 +44,36 @@ export default {
     closeModal() {
       this.$emit('closeModal');
     },
+    choosingColorFolder(index){
+      this.choosingColor = this.ArrayColor[index]
+      console.log(this.choosingColor);
+    },
+    AddFolderTasks() {
+      const NameNewFolderInput = document.querySelector(".NameNewFolderInput").value
+      this.$emit("AddNewFolderTasks", NameNewFolderInput, this.choosingColor)  
+      this.closeModal()
+    }
   },
   props: {
     ArrayColor: {
       type: Array,
       default() {
         return [
-          "rgb(201 209 211)",
-          "rgb(66 184 131)",
-          "rgb(100 196 237)",
-          "rgb(255 187 204)",
-          "rgb(182 230 189)",
-          "rgb(195 85 245)",
-          "rgb(9 1 25)",
-          "rgb(255 100 100)"
+          "#C9D1D3",
+          "#42B883",
+          "#64C4ED",
+          "#FFBBCC",
+          "#B6E6BD",
+          "#C355F5",
+          "#09011A",
+          "#FF6464"
         ]
       },
       require: true
     },
+  },
+  data() {
+    return {choosingColor: "#C9D1D3"} 
   } 
 };
 </script>

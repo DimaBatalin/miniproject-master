@@ -4,12 +4,13 @@
       <div class="main-window">
         <left-block 
           :tasksFolders="tasksFolders"
-                  
-          @allTasksClick="FolderSelection()"
+          @NewFolderTasks="NewFolderTasks"   
+          @allTasksClick="FolderSelection"
           @folderTaskClick="folderTaskClick"
         />
         <main-menu
-          :taskFolderObject="taskFolderObject"
+          :tasksFoldersObjects="tasksFoldersObjects"
+          @newTask="newTask"
         />
       </div>
     </div>
@@ -28,18 +29,30 @@ export default {
   },
   methods: {
     FolderSelection() {
-      this.taskFolderObject = {
-        id: 5000,
-        title:"все задачи",
-        color: 'black',
-      }
+      this.tasksFoldersObjects = [
+        ...this.tasksFolders
+      ]
     },
     folderTaskClick(index) {
-      
-      this.taskFolderObject = this.tasksFolders[index]
-      console.log(this.tasksFolders, this.tasksFolders[index]);
+      this.tasksFoldersObjects = [this.tasksFolders[index]]
+      this.activeIndex = index
     },
-    
+    NewFolderTasks(nameNewFolderTasks, colorNewFolderTasks) {
+      this.tasksFolders.push({
+        id: 5001,
+        title: nameNewFolderTasks,
+        color: colorNewFolderTasks,
+        date: new Date(),
+        tasks: []
+      })
+    },
+    newTask(text) {
+      this.tasksFolders[this.activeIndex].tasks.push({
+        idTask: 5,
+        isDone: false,
+        text: text,
+      })
+    }
   },
   data() {
     return {
@@ -79,11 +92,16 @@ export default {
           ],
         },
       ],
-      taskFolderObject: {
-        id: 5000,
-        title:"Выберете список задач",
-        color: 'black',
-      },
+      tasksFoldersObjects: [
+        {
+          id: 5001,
+          title:"Выберете список задач",
+          color: 'black',
+          date: new Date(),
+          tasks: []
+        }
+      ],
+      activeIndex: 0,
     };
   },
   // watch: {
