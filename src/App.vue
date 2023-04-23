@@ -7,10 +7,12 @@
           @NewFolderTasks="NewFolderTasks"   
           @allTasksClick="FolderSelection"
           @folderTaskClick="folderTaskClick"
+          @folderTaskClickDeleted="folderTaskClickDeleted"
         />
         <main-menu
           :tasksFoldersObjects="tasksFoldersObjects"
           @newTask="newTask"
+          @delTask="delTask"
         />
       </div>
     </div>
@@ -37,6 +39,9 @@ export default {
       this.tasksFoldersObjects = [this.tasksFolders[index]]
       this.activeIndex = index
     },
+    folderTaskClickDeleted(index) {
+      this.tasksFolders.splice(index, 1)
+    },
     NewFolderTasks(nameNewFolderTasks, colorNewFolderTasks) {
       this.tasksFolders.push({
         id: 5001,
@@ -52,6 +57,9 @@ export default {
         isDone: false,
         text: text,
       })
+    },
+    delTask(index) {
+      this.tasksFolders[this.activeIndex].tasks.splice(index, 1)
     }
   },
   data() {
@@ -134,6 +142,6 @@ body{
   background-color: #ffffff;
   display: flex;
   width: 80%;
-  height: calc(100vw*0.4);
+  min-height: calc(100vw*0.4);
 }
 </style>

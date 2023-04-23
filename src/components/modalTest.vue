@@ -43,6 +43,7 @@ export default {
   methods: {
     closeModal() {
       this.$emit('closeModal');
+      document.querySelector(".NameNewFolderInput").value = ``
     },
     choosingColorFolder(index){
       this.choosingColor = this.ArrayColor[index]

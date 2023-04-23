@@ -14,6 +14,7 @@ export default {
   methods: {
     close() {
       this.$emit("closeModal")
+      document.querySelector(".textTask").value = ''
     },
     addTask() {
       this.$emit("addTask", document.querySelector(".textTask").value)
