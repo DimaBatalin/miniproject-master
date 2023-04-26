@@ -10,9 +10,11 @@
           @folderTaskClickDeleted="folderTaskClickDeleted"
         />
         <main-menu
+          :tasksFolders="tasksFolders"
           :tasksFoldersObjects="tasksFoldersObjects"
           @newTask="newTask"
           @delTask="delTask"
+          @changeIsDoneTask="changeIsDoneTask"
         />
       </div>
     </div>
@@ -57,9 +59,14 @@ export default {
         isDone: false,
         text: text,
       })
+      localStorage.setItem('folders', JSON.stringify(this.tasksFolders))
     },
     delTask(index) {
       this.tasksFolders[this.activeIndex].tasks.splice(index, 1)
+    },
+    changeIsDoneTask(index) {
+      this.tasksFolders[this.activeIndex].tasks[index].isDone = !this.tasksFolders[this.activeIndex].tasks[index].isDone
+      localStorage.setItem('folders', JSON.stringify(this.tasksFolders))
     }
   },
   data() {
@@ -100,26 +107,18 @@ export default {
           ],
         },
       ],
-      tasksFoldersObjects: [
-        {
-          id: 5001,
-          title:"Выберете список задач",
-          color: 'black',
-          date: new Date(),
-          tasks: []
-        }
-      ],
+      tasksFoldersObjects: [],
       activeIndex: 0,
     };
   },
-  // watch: {
-  //   tasksFolders(newFolders) {
-  //     localStorage.setItem('folders', JSON.stringify(newFolders))
-  //   }
-  // },
-  // created() {
-  //   this.tasksFolders = JSON.parse(localStorage.getItem('folders')) || []
-  // }
+  watch: {
+    tasksFolders(newFolders) {
+      localStorage.setItem('folders', JSON.stringify(newFolders))
+    }
+  },
+  created() {
+    this.tasksFolders = JSON.parse(localStorage.getItem('folders')) || []
+  }
 }
 </script>
 

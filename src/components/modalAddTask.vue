@@ -33,7 +33,7 @@ export default {
 .textTask {
   border: 1px solid #EFEFEF;
   border-radius: 4px;
-  width: 90%;
+  width: 100%;
   height: 1.5rem;
   padding: 0.5rem;
   margin: 0.5rem 0 0.5rem 0;
@@ -41,14 +41,14 @@ export default {
 .modal-addtask-buttons {
   display: flex;
   width: 60%;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 .addTask {
   background: #4DD599;
   border: 0;
   border-radius: 4px;
   color: white;
-  width: 40%;
+  width: 48%;
   padding: 0.7rem;
   margin: 0.5rem 0 0.5rem 0;
 }
@@ -57,7 +57,7 @@ export default {
   border: 0;
   color: #9C9C9C;
   border-radius: 4px;
-  width: 40%;
+  width: 48%;
   padding: 0.7rem;
   margin: 0.5rem 0 0.5rem 0;
 }

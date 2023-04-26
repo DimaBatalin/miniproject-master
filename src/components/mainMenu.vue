@@ -1,6 +1,12 @@
 <template>
   <div class="main_main">
     <div
+      v-if="tasksFolders.length==0"
+      class="notHaveFolders"
+    >
+    Задачи отсутствуют
+    </div>
+    <div
       class="main-menu"
       v-for="(taskFolderObject, index) in tasksFoldersObjects"
       :key="index"  
@@ -13,7 +19,7 @@
         <div
           style="align-items: center; display: flex;"
           @click="changeFolderNameButton()"
-          v-if="taskFolderObject.title != 'все задачи' && taskFolderObject.title != 'Выберете список задач' && tasksFoldersObjects.length==1"
+          v-if="tasksFoldersObjects.length==1"
         >
           <svg 
             width="20" 
@@ -38,9 +44,27 @@
         class="taskInFolder"
       >
         <div style="display: flex; align-items: center;">
-          <input class="InputTaskInFolder" type="checkbox" v-bind:checked="task.isDone" @click="task.isDone = !task.isDone">
+
+
+          <div 
+            v-if="task.isDone == true"
+            class="InputTaskInFolder Done" 
+            @click="changeIsDone(index)"
+          >
+            <svg width="11" height="8" viewBox="0 0 11 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9.29999 1.20001L3.79999 6.70001L1.29999 4.20001" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div
+            v-else
+            class="InputTaskInFolder notDone" 
+            @click="changeIsDone(index)"
+          ></div>
+
 
           <div>{{ task.text }}</div>
+
+
         </div>
         <div 
           v-if="task.isDone==true"
@@ -96,6 +120,13 @@ export default {
       },
       required: true,
     },
+    tasksFolders: {
+      type: Array,
+      default() {
+        return []
+      },
+      required: true,
+    }
   },
   data() {
     return {
@@ -117,12 +148,25 @@ export default {
     },
     deletedTask(index) {
       this.$emit("delTask", index)
+    },
+    changeIsDone(index) {
+      this.$emit("changeIsDoneTask", index)
     }
+    
   },
 }
 </script>
 
 <style scoped>
+.notHaveFolders {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: 5rem;
+  color: #C9D1D3;
+}
 .main_main{
   width: 100%;
   display: flex;
@@ -170,10 +214,21 @@ export default {
 }
 .InputTaskInFolder {
   border-radius: 50%;
-  height: 10px;
-  width: 10px;
+  height: 1rem;
+  width: 1rem;
   margin-right: 0.5rem;
   border: 2px solid #E8E8E8;
+}
+.Done {
+  background-color: #4DD599;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #4DD599;
+}
+.notDone {
+  border: 3px solid #E8E8E8;
 }
 .modal {
   display: flex;

@@ -17,12 +17,24 @@
         v-for="(color, index) in this.ArrayColor"
         :key="index"
       >
-
-        <div 
-          @click="choosingColorFolder(index)"
-          class="color" 
-          :style="{backgroundColor: color}"
-        ></div>
+        <div
+          v-if="activeIndexColor == index"
+        >
+          <div 
+            @click="choosingColorFolder(index)"
+            class="color Active" 
+            :style="{backgroundColor: color}"
+          ></div>
+        </div>
+        <div
+          v-else
+        >
+          <div 
+            @click="choosingColorFolder(index)"
+            class="color" 
+            :style="{backgroundColor: color}"
+          ></div>
+        </div>
 
       </div>
     </div>
@@ -48,6 +60,7 @@ export default {
     choosingColorFolder(index){
       this.choosingColor = this.ArrayColor[index]
       console.log(this.choosingColor);
+      this.activeIndexColor = index
     },
     AddFolderTasks() {
       const NameNewFolderInput = document.querySelector(".NameNewFolderInput").value
@@ -74,7 +87,11 @@ export default {
     },
   },
   data() {
-    return {choosingColor: "#C9D1D3"} 
+    return {
+      choosingColor: "#C9D1D3",
+      activeIndexColor: 0,
+    } 
+    
   } 
 };
 </script>
@@ -108,6 +125,9 @@ export default {
   height: 1.2rem;
   width: 1.2rem;
   border-radius: 50%;
+}
+.Active {
+  border: 2px solid #525252;
 }
 .btn-close{
   display: flex;
