@@ -48,8 +48,8 @@ fastify.register(require('@fastify/cors'), (instance) => {
     }
 })
 
-// Создание маршрута для get запроса
-fastify.post('/select', async function (request, reply) {
+// Создание маршрута для get запроса для  users 
+fastify.post('/users/select', async function (request, reply) {
     const client = await pool.connect()
     let data = null
 
@@ -70,8 +70,8 @@ fastify.post('/select', async function (request, reply) {
 })
 
 
-// создание маршрутов для пост запросов 
-fastify.post('/insert', async function (request, reply) {
+// создание маршрутов для пост запросов для users
+fastify.post('/users/insert', async function (request, reply) {
     const client = await pool.connect()
     let data = null
     try {
@@ -89,7 +89,7 @@ fastify.post('/insert', async function (request, reply) {
 })
 
 
-fastify.post('/update', async function (request, reply) {
+fastify.post('/users/update', async function (request, reply) {
     const client = await pool.connect()
     let data = null
     try {
@@ -106,7 +106,7 @@ fastify.post('/update', async function (request, reply) {
     reply.send({ Hello: "world" }, [ request.body.name, request.body.id ])
 })
 
-fastify.post('/delete', async function (request, reply) {
+fastify.post('/users/delete', async function (request, reply) {
     const client = await pool.connect()
     
     try {
@@ -121,6 +121,144 @@ fastify.post('/delete', async function (request, reply) {
     }
     reply.send({ Hello: "world" })
 })
+
+// Создание маршрута для get запроса для folders 
+fastify.post('/folders/select', async function (request, reply) {
+    const client = await pool.connect()
+    let data = {
+        message: "error",
+        statusCode: 400
+    }
+    try {
+        const folder = await client.query(`select "folderId", "folderName", "folderColor" from folders`)
+        
+        data.message = folder.rows
+        data.statusCode = 200
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+        reply.send({ data })
+    }
+})
+
+
+// создание маршрутов для пост запросов для folders
+fastify.post('/folders/insert', async function (request, reply) {
+    const client = await pool.connect()
+    try {
+        await client.query(`insert into folders ("folderName", "folderColor") values ($1, $2)`, [ request.body.folderName, request.body.folderColor ])
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" })
+})
+
+
+fastify.post('/folders/update', async function (request, reply) {
+    const client = await pool.connect()
+    try {
+        await client.query(`update folders set "folderName" = $2 where "folderId" = $1`, [ request.body.folderId, request.body.newFolderName ])
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" }, [ request.body.folderName, request.body.newFolderName ])
+})
+
+fastify.post('/folders/delete', async function (request, reply) {
+    const client = await pool.connect()
+    
+    try {
+        await client.query(`delete from folders where "folderId" = $1`, [ request.body.folderId ])
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" })
+})
+
+// Создание маршрута для get запроса для tasks 
+fastify.post('/tasks/select', async function (request, reply) {
+    const client = await pool.connect()
+    let data = {
+        message: "error",
+        statusCode: 400
+    }
+    try {
+        const users = await client.query(`select "taskId", "taskText", "isDone", "folderId" from tasks`)
+        
+        data.message = users.rows
+        data.statusCode = 200
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+        reply.send({ data })
+    }
+})
+
+
+// создание маршрутов для пост запросов для tasks
+fastify.post('/tasks/insert', async function (request, reply) {
+    const client = await pool.connect()
+    try {
+        await client.query(`insert into tasks ("taskText", "folderId", "isDone") values ($1, $2, $3)`, [ request.body.taskText, request.body.folderId, false ])
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" })
+})
+
+
+fastify.post('/tasks/update', async function (request, reply) {
+    const client = await pool.connect()
+    try {
+        await client.query(`update tasks set "taskText" = $1, "isDone" = $3 where "taskId" = $2`, [ request.body.taskText, request.body.taskId, request.body.isDone ])
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" })
+})
+
+fastify.post('/tasks/delete', async function (request, reply) {
+    const client = await pool.connect()
+    
+    try {
+        await client.query(`delete from tasks where "taskId" = $1`, [ request.body.taskId ])
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+    reply.send({ Hello: "world" })
+})
+
+
 
 // Создание маршрута для post запроса
 fastify.post('/post',function (request, reply) {
