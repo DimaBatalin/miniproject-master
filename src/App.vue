@@ -63,6 +63,7 @@ export default {
     },
     delTask(index) {
       this.tasksFolders[this.activeIndex].tasks.splice(index, 1)
+      localStorage.setItem('folders', JSON.stringify(this.tasksFolders))
     },
     changeIsDoneTask(index) {
       this.tasksFolders[this.activeIndex].tasks[index].isDone = !this.tasksFolders[this.activeIndex].tasks[index].isDone
