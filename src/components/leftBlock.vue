@@ -147,6 +147,8 @@ export default {
     },
     AddNewFolderTasks(nameNewFolderTasks, colorNewFolderTasks) {
       this.$emit('NewFolderTasks', nameNewFolderTasks, colorNewFolderTasks)
+      this.ActiveFolderIndex = this.tasksFolders.length-1
+
     },
   },
 }
@@ -167,8 +169,9 @@ export default {
   margin: 1rem;
 }
 .active {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
   border-radius: 0.5rem;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.03);
 }
 .allTasksButton-botton{
   font-size: 1.2rem;
@@ -178,6 +181,7 @@ export default {
   align-items: center;
   padding: 1rem;
   color: black;
+  background: none;
 }
 .allTasksButton-botton svg{
   fill: #7C7C7C;
@@ -197,7 +201,7 @@ export default {
   align-items: center;
   padding: 0.5rem, 0.5rem;
   border-radius: 0.3rem;
-}
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.03);}
 .addFolderTasksButton {
   border: 0px;
   margin-top: 1rem;
@@ -206,6 +210,8 @@ export default {
   align-items: center;
   color: #868686;
   background-color: #F4F6F8;
+  margin-left: 0.5rem;
+  padding: 0.3rem;
 }
 .addFolderTasksButton svg{
   fill: #868686;

@@ -15,6 +15,7 @@
           @newTask="newTask"
           @delTask="delTask"
           @changeIsDoneTask="changeIsDoneTask"
+          @changeTitleFolder="changeTitleFolder"
         />
       </div>
     </div>
@@ -42,16 +43,19 @@ export default {
       this.activeIndex = index
     },
     folderTaskClickDeleted(index) {
+      this.tasksFoldersObjects = [this.tasksFolders[index-1]]
       this.tasksFolders.splice(index, 1)
     },
     NewFolderTasks(nameNewFolderTasks, colorNewFolderTasks) {
       this.tasksFolders.push({
-        id: 5001,
+        id: 5002,
         title: nameNewFolderTasks,
         color: colorNewFolderTasks,
         date: new Date(),
         tasks: []
       })
+      this.tasksFoldersObjects = [this.tasksFolders[this.tasksFolders.length-1]]
+      this.activeIndex = this.tasksFolders.length-1
     },
     newTask(text) {
       this.tasksFolders[this.activeIndex].tasks.push({
@@ -68,6 +72,12 @@ export default {
     changeIsDoneTask(index) {
       this.tasksFolders[this.activeIndex].tasks[index].isDone = !this.tasksFolders[this.activeIndex].tasks[index].isDone
       localStorage.setItem('folders', JSON.stringify(this.tasksFolders))
+    },
+    changeTitleFolder(newTitle) {
+      if (newTitle != null) {
+        this.tasksFolders[this.activeIndex].title = newTitle
+        localStorage.setItem('folders', JSON.stringify(this.tasksFolders))
+      }
     }
   },
   data() {

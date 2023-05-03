@@ -4,8 +4,17 @@
       v-if="tasksFolders.length==0"
       class="notHaveFolders"
     >
-    Задачи отсутствуют
+      Задачи отсутствуют 
     </div>
+
+    <div
+      v-else-if="tasksFoldersObjects.length==0"
+      class="notHaveFolders"
+    >
+      Выберете задачу
+    </div>
+
+
     <div
       class="main-menu"
       v-for="(taskFolderObject, index) in tasksFoldersObjects"
@@ -14,11 +23,11 @@
       <div 
         class="main-name"  
         :style="{color: taskFolderObject.color}"
-        >
+      >
         {{ taskFolderObject.title }}
         <div
           style="align-items: center; display: flex;"
-          @click="changeFolderNameButton()"
+          @click="changeFolderNameButton(index)"
           v-if="tasksFoldersObjects.length==1"
         >
           <svg 
@@ -49,7 +58,6 @@
             v-if="task.isDone == true"
             class="InputTaskInFolder Done" 
             @click="changeIsDone(index)"
-            @mouseleave="mouseHover(index)"
           >
             <svg width="11" height="8" viewBox="0 0 11 8" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9.29999 1.20001L3.79999 6.70001L1.29999 4.20001" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -59,11 +67,15 @@
             v-else
             class="InputTaskInFolder notDone" 
             @click="changeIsDone(index)"
-          ></div>
+          >
+            <svg width="11" height="8" viewBox="0 0 11 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9.29999 1.20001L3.79999 6.70001L1.29999 4.20001" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
 
-
-          <div>{{ task.text }}</div>
-
+          <div>
+            {{ task.text }}
+          </div>
 
         </div>
         <div 
@@ -88,25 +100,20 @@
         class="middleMain" 
         @click="addNewTask"
       >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          height="30" 
-          viewBox="0 96 960 960" 
-          width="30"
-          fill="#B4B4B4"
+        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 96 960 960" width="30" fill="#B4B4B4"
         >
           <path d="M450 856V606H200v-60h250V296h60v250h250v60H510v250h-60Z"
         /></svg>
         Новая задача
       </button>
 
-      <div class="modal">
-        <modalAddTask
-          v-show="isModalVisiblPole"
-          @closeModal="closeModal"
-          @addTask="addTask"
-        ></modalAddTask>
-      </div>
+    </div>
+    <div class="modal">
+      <modalAddTask
+        v-show="isModalVisiblPole"
+        @closeModal="closeModal"
+        @addTask="addTask"
+      ></modalAddTask>
     </div>
   </div>
 </template>
@@ -140,11 +147,11 @@ export default {
     }
   },
   methods: {
-    mouseHover(index) {
-      console.log(index);    
-    },
-    changeFolderNameButton() {
-      console.log("change");
+    changeFolderNameButton(index) {
+
+      let newTitle = prompt("Новое название папки", this.tasksFoldersObjects[index].title) 
+      this.$emit("changeTitleFolder", newTitle)
+      console.log(newTitle, index);
     },
     addNewTask() {
       this.isModalVisiblPole = true
@@ -163,6 +170,11 @@ export default {
     }
     
   },
+  beforeUpdate() {
+    if (this.tasksFoldersObjects.length>1) {
+      this.isModalVisiblPole = false
+    }
+  }
 }
 </script>
 
@@ -202,6 +214,9 @@ export default {
   flex-direction: column;
   align-items: center;
 }
+.main-menu:last-child{
+  padding-bottom: 5rem;
+}
 .middleMain{
   border: 0px;
   background-color: #ffffff;
@@ -228,6 +243,13 @@ export default {
   margin-right: 0.5rem;
   border: 2px solid #E8E8E8;
 }
+.InputTaskInFolder:hover {
+  background-color: #F2F2F2;
+  border-color: #F2F2F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .Done {
   background-color: #4DD599;
   border: 0;
@@ -238,6 +260,7 @@ export default {
 }
 .notDone {
   border: 3px solid #E8E8E8;
+  display: flex;
 }
 .modal {
   display: flex;
@@ -246,6 +269,5 @@ export default {
 }
 * {
   color: black;
-  
 }
 </style>
