@@ -54,8 +54,8 @@ export default {
         date: new Date(),
         tasks: []
       })
-      this.tasksFoldersObjects = [this.tasksFolders[this.tasksFolders.length-1]]
       this.activeIndex = this.tasksFolders.length-1
+      this.tasksFoldersObjects = [this.tasksFolders[this.activeIndex]]
     },
     newTask(text) {
       this.tasksFolders[this.activeIndex].tasks.push({
