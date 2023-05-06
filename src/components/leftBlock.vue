@@ -130,6 +130,7 @@ export default {
     },
     taskFolderDeleted(index) {
       this.$emit("folderTaskClickDeleted", index)
+      this.ActiveFolderIndex=index-1
     },
     allTasksButton() {
       this.ActiveFolderIndex = null
