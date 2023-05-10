@@ -22,9 +22,9 @@
     >
       <div 
         class="main-name"  
-        :style="{color: taskFolderObject.color}"
+        :style="{color: taskFolderObject.folderColor}"
       >
-        {{ taskFolderObject.title }}
+        {{ taskFolderObject.folderName }}
         <div
           style="align-items: center; display: flex;"
           @click="changeFolderNameButton(index)"

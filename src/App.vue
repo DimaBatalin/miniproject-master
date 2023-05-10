@@ -48,9 +48,9 @@ export default {
     },
     NewFolderTasks(nameNewFolderTasks, colorNewFolderTasks) {
       this.tasksFolders.push({
-        id: 5002,
-        title: nameNewFolderTasks,
-        color: colorNewFolderTasks,
+        taskId: 5002,
+        folderName: nameNewFolderTasks,
+        folderColor: colorNewFolderTasks,
         date: new Date(),
         tasks: []
       })
@@ -78,46 +78,43 @@ export default {
         this.tasksFolders[this.activeIndex].title = newTitle
         localStorage.setItem('folders', JSON.stringify(this.tasksFolders))
       }
+    },
+    async getTasks(index) {
+      try {
+        const response = await this.$axios.post(`/tasksinfolder`, //функция fetch для получение данных
+          {
+            "folderId": index
+          }
+        )
+        let tasks = []
+        for (let i = 0; i < response.data.data.massage.length; i++) {
+          tasks.push({
+            taskId: response.data.data.massage[i].taskId,
+            taskText: response.data.data.massage[i].taskText,
+            isDone: response.data.data.massage[i].isDone,
+            folderId: response.data.data.massage[i].folderId
+          })
+        }
+        this.tasksFolders[index].tasks = tasks
+        console.log(response.data.data.massage);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getFolders() {
+      try {
+        const response = await this.$axios.post(`/folders/select`)
+        // console.log(response.data.data.massage);
+        this.tasksFolders = response.data.data.massage
+      } catch (error) {
+        console.log(error);
+      }
+      console.log(this.tasksFolders);
     }
   },
   data() {
     return {
-      tasksFolders: [
-        {
-          id: 0,
-          title: 'Test1',
-          color: "#42B883",
-          date: new Date(),
-          tasks: [
-            {
-              idTask: 0, 
-              isDone: false,
-              text: "посапать1",
-            },
-          ]
-        },
-        {
-          id: 1,
-          title: 'Test2',
-          color: "#64C4ED",
-          date: new Date(),
-          tasks: [
-            {
-              idTask: 1, 
-              isDone: true,
-              text: "посапать2",
-            },
-          ]
-        },
-        {
-          id: 1,
-          title: 'Test2',
-          color: "#64C4ED",
-          date: new Date(),
-          tasks: [
-          ],
-        },
-      ],
+      tasksFolders: [],
       tasksFoldersObjects: [],
       activeIndex: 0,
     };
@@ -127,8 +124,10 @@ export default {
       localStorage.setItem('folders', JSON.stringify(newFolders))
     }
   },
-  created() {
-    this.tasksFolders = JSON.parse(localStorage.getItem('folders')) || []
+  async created() {
+    await this.getFolders()
+    await this.getTasks(2)
+    // this.tasksFolders = JSON.parse(localStorage.getItem('folders')) || []
   }
 }
 </script>

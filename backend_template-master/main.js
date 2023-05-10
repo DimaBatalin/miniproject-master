@@ -321,7 +321,7 @@ fastify.post("/tasksinfolder", async function (request, reply) {
         statusCode: 400
     }
     try {
-        const tasksinfolder = await client.query(`select * from tasks T inner join folders F on T."folderId" = F."folderId" where T."folderId" = $1`, [ request.body.folderId])
+        const tasksinfolder = await client.query(`select * from tasks T inner join folders F on T."folderId" = F."folderId" where T."folderId" = $1`, [ request.body.folderId ])
         data.massage = tasksinfolder.rows
         data.statusCode = 200
     } catch (error) {

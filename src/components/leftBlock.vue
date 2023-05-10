@@ -39,10 +39,10 @@
         >
           <div 
             class="folderColorTasksСircle" 
-            :style="{ backgroundColor: taskFolder.color}"
+            :style="{ backgroundColor: taskFolder.folderColor}"
           ></div>
           <div class="folderNameTasks">  
-            {{ taskFolder.title }}
+            {{ taskFolder.folderName }}
           </div>
         </div>
         <div 

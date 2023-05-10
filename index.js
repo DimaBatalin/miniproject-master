@@ -1,48 +1,35 @@
-[
-    // FolderTask:
-    {
-        id: 1,
-        title: 'Test1',
-        color: "rgb(201 209 211)",
-    },
-    // task:
-    {
-        idTask: 0, 
-        isDone: false,
-        text: "",
-        date: new Date()
-    },
-    // user: 
-    {
-        idUser: 1,
-        nameUser: "Dima",
-    }
-]
-
-[
-    {
-        flag: true,
-
-    }
-]
-[
-    {
-        idUser: 0, 
-        name: '',
-        FoldersTasks: [
-            {
-                id: 0,
-                title: 'Test1',
-                color: "rgb(201 209 211)",
-                tasks: [
-                    {
-                        idTask: 0, 
-                        isDone: false,
-                        text: "",
-                        date: new Date(),
-                    },
-                ],
-            }
-        ],
-    }
-]
+// Array [ {…}, {…} ]
+// ​
+// 0: Object { taskId: 4, taskText: "kjsbdl jqfds gbfhgbjb ebg bewbd fbkajgbf ", isDone: false, … }
+// ​​
+// folderColor: "red"
+// ​​
+// folderId: 2
+// ​​
+// folderName: null
+// ​​
+// isDone: false
+// ​​
+// taskId: 4
+// ​​
+// taskText: "kjsbdl jqfds gbfhgbjb ebg bewbd fbkajgbf "
+// ​​
+// <prototype>: Object { … }
+// ​
+// 1: Object { taskId: 5, taskText: "kjsbdl jqfds gbfhgbjb ebg bewbd fbkajgbf ", isDone: false, … }
+// ​​
+// folderColor: "red"
+// ​​
+// folderId: 2
+// ​​
+// folderName: null
+// ​​
+// isDone: false
+// ​​
+// taskId: 5
+// ​​
+// taskText: "kjsbdl jqfds gbfhgbjb ebg bewbd fbkajgbf "
+// ​​
+// <prototype>: Object { … }
+// ​
+// length: 2
