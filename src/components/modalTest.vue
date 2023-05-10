@@ -101,6 +101,7 @@ export default {
   width: 15rem;
   padding: 0.5rem;
   background-color: #ffffff;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -140,9 +141,11 @@ export default {
   top: -0.5rem;
   border: 0px;
   background-color: #5C5C5C;
+  color: #ffffff;
 }
 .AddFolderTasks{
   margin-top: 1rem;
+  margin-bottom: 1rem;
   background: #4DD599;
   border-radius: 0.4rem;
   padding: 1rem 1rem 1rem 1.2rem;
