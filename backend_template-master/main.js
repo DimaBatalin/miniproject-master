@@ -2,6 +2,8 @@
 const fastify = require('fastify')({
     logger: true // Эта штука нужна, чтобы в терминале отображались логи запросов
 })
+const pdfmake = require('pdfmake');
+const pdfMakePrinter = require('pdfmake/src/printer')
 
 // для базы данных
 const Pool = require('pg-pool')
@@ -169,6 +171,27 @@ fastify.post('/folders/select', async function (request, reply) {
         reply.send({ data })
     }
 })
+async function getAllFoldersLenght() {
+    const client = await pool.connect()
+    // let data = {
+    //     massage: "error",
+    //     statusCode: 400
+    // }
+    try {
+        const folder = await client.query(`select "folderId", "folderName", "folderColor" from folders`)
+        
+        // data.massage = folder.rows
+        // data.statusCode = 200
+        console.log("количетво папок", folder.rows.length);
+        return folder.rows.length
+    } 
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+}
 
 
 // создание маршрутов для пост запросов для folders
@@ -320,9 +343,17 @@ fastify.post("/tasksinfolder", async function (request, reply) {
         massage: "error",
         statusCode: 400
     }
+    let tasks = []
     try {
         const tasksinfolder = await client.query(`select * from tasks T inner join folders F on T."folderId" = F."folderId" where T."folderId" = $1`, [ request.body.folderId ])
-        data.massage = tasksinfolder.rows
+
+        for (let i = 0; i < tasksinfolder.rows.length; i++) {
+            tasks.push({
+                taskText: tasksinfolder.rows[i].taskText,
+                isDone: tasksinfolder.rows[i].isDone
+            })
+        }
+        data.massage = tasks
         data.statusCode = 200
     } catch (error) {
         console.log(error);
@@ -332,6 +363,130 @@ fastify.post("/tasksinfolder", async function (request, reply) {
     }
     reply.send({ data })
 })
+async function getAllTasks() {
+    
+    const client = await pool.connect()
+    const numberOfFolders = await getAllFoldersLenght()
+
+    // let data = {
+    //     massage: "error",
+    //     statusCode: 400
+    // }
+    let tasks = [`всего папок: ${numberOfFolders}\n`]
+    try {
+        console.log(numberOfFolders);
+        for (let i = 0; i < numberOfFolders.length; i++) {
+
+            const tasksinfolder = await client.query(`select T."taskText" from tasks T inner join folders F on T."folderId" = F."folderId" where T."folderId" = $1`, [i])
+            console.log(tasksinfolder);
+            for (let i = 0; i < tasksinfolder.rows.length; i++) {
+                tasks.push(tasksinfolder.rows[i].taskText)
+            }
+        }
+
+        // data.massage = tasks
+        // data.statusCode = 200
+        console.log("Задания:", tasks);
+        return tasks
+    } catch (error) {
+        console.log(error);
+    }
+    finally {
+        client.release()
+    }
+}
+
+// 12.05.23
+// Define font files
+const fonts = {
+    Roboto: {
+        normal: './fonts/Roboto-Black.ttf',
+        bold: './fonts/Roboto-Bold.ttf',
+        italics: './fonts/Roboto-Italic.ttf',
+    }
+};
+
+fastify.post("/pdfAllTasks", async (request, reply)=>{
+    try {
+        const tasks = await getAllTasks()
+        const strTasks = tasks.join('/') 
+        console.log(strTasks, "end");
+
+        const printer = new pdfMakePrinter(fonts)
+        const docFile = printer.createPdfKitDocument({
+            content: [
+                `${strTasks}`,
+                "end"
+            ]
+        })
+        const doc = await docFileFromStream(docFile)
+        reply.header("Content-Type", 'application/pdf')
+        reply.send(doc)
+    } 
+    catch (error) {
+        console.log(error);
+    }
+})
+// pdfmake.addFonts(fonts);
+
+// var docDefinition = {
+//   // ...
+// };
+
+// var options = {
+//   // ...
+// }
+
+// var pdf = pdfmake.createPdf(docDefinition);
+// pdf.write('document.pdf').then(() => {
+//   // success event
+// }, err => {
+//   // error event
+//   console.error(err);
+// });
+async function docFileFromStream(document) {
+    const chunks = [];
+    let result = null;
+    return new Promise(function (resolve, reject) {
+        try {
+            document.on('data', function (chunk) {
+                chunks.push(chunk);
+            });
+            document.on('end', async function () {
+                result = Buffer.concat(chunks);
+                console.log('end');
+                resolve(result);
+                
+            });
+            document.on('error', reject);
+            document.end();
+        } catch (error) {
+            console.log('docFileFromStream ERROR');
+            console.log(error);
+            reject(null);
+        }
+    });
+}
+
+fastify.post("/pdf", async (request, reply)=>{
+    try {
+        const printer = new pdfMakePrinter(fonts)
+        const docFile = printer.createPdfKitDocument({
+            content: [
+                'First paragraph',
+                'Another paragraph, this time a little bit longer to make sure, this line will be divided into at least two lines'
+            ]
+        })
+        const doc = await docFileFromStream(docFile)
+        reply.header("Content-Type", 'application/pdf')
+        reply.send(doc)
+    } 
+    catch (error) {
+        console.log(error);
+    }
+})
+
+
 
 
 // Создание маршрута для post запроса
